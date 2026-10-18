@@ -6,7 +6,7 @@
 #include <VulkanCommon.hpp>
 #include <Descriptors.hpp>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 
 	class Device;

@@ -2,11 +2,13 @@
 #include <DebugChecks.hpp>
 #include <Device.hpp>
 #include <Window.hpp>
+#include <Image.hpp>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 	SwapChain::SwapChain(SwapChainVulkanObjects objects)
 	{
+		this->device = objects.device;
 		auto surface = objects.window->getSurface();
 		auto device = objects.device->getDevice();
 		VkSurfaceCapabilitiesKHR surfaceCaps{};
@@ -25,7 +27,7 @@ namespace SylvonixRenderer
 			.imageColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR,
 			.imageExtent{.width = swapchainExtent.width, .height = swapchainExtent.height },
 			.imageArrayLayers = 1,
-			.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
+			.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
 			.preTransform = VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR,
 			.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			.presentMode = VK_PRESENT_MODE_FIFO_KHR
@@ -40,10 +42,52 @@ namespace SylvonixRenderer
 			VkImageViewCreateInfo viewCI{ .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO, .image = images[i], .viewType = VK_IMAGE_VIEW_TYPE_2D, .format = imageFormat, .subresourceRange{.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT, .levelCount = 1, .layerCount = 1 } };
 			chk(vkCreateImageView(device, &viewCI, nullptr, &imageViews[i]));
 		}
+
+		depthImage = std::make_unique<Image>(
+			objects.allocator,
+			objects.device->getDevice(),
+			ImageDescriptor{
+				.width = swapchainExtent.width,
+				.height = swapchainExtent.height,
+				.format = VK_FORMAT_R16G16B16A16_SFLOAT,
+				.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+				.aspect = VK_IMAGE_ASPECT_COLOR_BIT,
+				.dedicatedMemory = true
+			}
+		);
 	}
 
 	SwapChain::~SwapChain()
 	{
+		std::cout << "Destroying HDR\n";
+		hdrImage.reset();
 
+		std::cout << "Destroying Depth\n";
+		depthImage.reset();
+
+		std::cout << "Destroying Views\n";
+		for(auto& imageView : imageViews)
+		{
+			vkDestroyImageView(
+				device->getDevice(),
+				imageView,
+				nullptr
+			);
+		}
+
+		std::cout << "Destroying View\n";
+		imageViews.clear();
+
+		if(swapchain)
+		{
+			std::cout << "Destroying Swapchain\n";
+			vkDestroySwapchainKHR(
+				device->getDevice(),
+				swapchain,
+				nullptr
+			);
+
+			swapchain = VK_NULL_HANDLE;
+		}
 	}
 }

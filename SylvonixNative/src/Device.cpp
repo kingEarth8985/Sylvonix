@@ -4,7 +4,7 @@
 #include <iostream>
 #include <SDL3/SDL_vulkan.h>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 
 	VkPhysicalDevice PickDevice(
@@ -41,7 +41,7 @@ namespace SylvonixRenderer
 		{
 			VkPhysicalDeviceProperties2 deviceProperties{ .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2 };
 			vkGetPhysicalDeviceProperties2(devices[i], &deviceProperties);
-			std::cout << "Possible device: " << deviceProperties.properties.deviceName << "\n";
+			//std::cout << "Possible device: " << deviceProperties.properties.deviceName << "\n"; //we could use this later if we want to give access to debug info
 			if (deviceProperties.properties.deviceType ==
 				VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
 			{
@@ -95,7 +95,13 @@ namespace SylvonixRenderer
 
 	Device::~Device()
 	{
-		// Device cleanup code goes here
-	}
+		if (device)
+		{
+			vkDeviceWaitIdle(device);
 
+			vkDestroyDevice(device, nullptr);
+
+			device = VK_NULL_HANDLE;
+		}
+	}
 }

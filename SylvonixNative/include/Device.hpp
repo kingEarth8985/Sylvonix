@@ -1,7 +1,7 @@
 #pragma once
 #include <VulkanCommon.hpp>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 	class Device
 	{

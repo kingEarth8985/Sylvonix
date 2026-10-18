@@ -4,7 +4,7 @@
 #include <Window.hpp>
 #include <SwapChain.hpp>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 	VmaAllocator CreateVMAAllocator(
 		Device& device,
@@ -43,9 +43,17 @@ namespace SylvonixRenderer
 		};
 		uint32_t instanceExtensionsCount{ 0 };
 		char const* const* instanceExtensions{ SDL_Vulkan_GetInstanceExtensions(&instanceExtensionsCount) };
+		
+		const char* validationLayers[] =
+		{
+			"VK_LAYER_KHRONOS_validation"
+		};
+		
 		VkInstanceCreateInfo instanceCI{
 			.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 			.pApplicationInfo = &appInfo,
+			.enabledLayerCount = 1,
+			.ppEnabledLayerNames = validationLayers,
 			.enabledExtensionCount = instanceExtensionsCount,
 			.ppEnabledExtensionNames = instanceExtensions,
 		};
@@ -64,12 +72,39 @@ namespace SylvonixRenderer
 		SwapChainVulkanObjects swapVKObjects{
 			.device = device.get(),
 			.window = window.get(),
+			.allocator = allocator,
 		};
 		swapChain = std::make_unique<SwapChain>(swapVKObjects);
 	}
 
 	Application::~Application()
 	{
+		//vkDeviceWaitIdle(device->getDevice());
+		std::cout << "Destructing SwapChain\n";
+		swapChain.reset();
+
+		std::cout << "Destructing Window\n";
+		window.reset();
+
+		std::cout << "Destructing Device\n";
+		device.reset();
+
+		if (allocator)
+		{
+			std::cout << "Destructing Allocator\n";
+			vmaDestroyAllocator(allocator);
+			allocator = VK_NULL_HANDLE;
+		}
+
+		if (instance)
+		{
+			std::cout << "Destructing Instance\n";
+			vkDestroyInstance(instance, nullptr);
+			instance = VK_NULL_HANDLE;
+		}
 		
+		SDL_Quit();
+
+		std::cout << "Exited Without Errors \n";
 	}
 }

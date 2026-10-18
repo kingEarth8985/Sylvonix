@@ -6,7 +6,7 @@
 #include <iostream>
 #include <Descriptors.hpp>
 
-namespace SylvonixRenderer
+namespace SylvonixNative
 {
 
 	class Device;
@@ -28,6 +28,8 @@ namespace SylvonixRenderer
 		WindowDescriptor* getDescriptor() { return &descriptor; }
 
 	private:
+		VkInstance instance{ VK_NULL_HANDLE };
+
 		SDL_Window* window;
 		VkSurfaceKHR surface{ VK_NULL_HANDLE };
 
