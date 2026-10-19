@@ -18,5 +18,7 @@ int main()
 
 	SylvonixNative::Application app(appDescriptor);
 
+	app.startMainLoop();
+
 	return 0;
 }

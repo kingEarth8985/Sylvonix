@@ -43,14 +43,50 @@ namespace SylvonixNative
 			chk(vkCreateImageView(device, &viewCI, nullptr, &imageViews[i]));
 		}
 
+		// Depth
 		depthImage = std::make_unique<Image>(
 			objects.allocator,
 			objects.device->getDevice(),
 			ImageDescriptor{
 				.width = swapchainExtent.width,
 				.height = swapchainExtent.height,
+				.format = VK_FORMAT_D32_SFLOAT,
+				.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+				.aspect = VK_IMAGE_ASPECT_DEPTH_BIT,
+				.dedicatedMemory = true
+			}
+		);
+
+		// HDR
+		hdrImage = std::make_unique<Image>(
+			objects.allocator,
+			objects.device->getDevice(),
+			ImageDescriptor{
+				.width = swapchainExtent.width,
+				.height = swapchainExtent.height,
 				.format = VK_FORMAT_R16G16B16A16_SFLOAT,
-				.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+				.usage =
+					VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+					VK_IMAGE_USAGE_STORAGE_BIT |
+					VK_IMAGE_USAGE_SAMPLED_BIT,
+				.aspect = VK_IMAGE_ASPECT_COLOR_BIT,
+				.dedicatedMemory = true
+			}
+		);
+
+		// SDR
+		sdrImage = std::make_unique<Image>(
+			objects.allocator,
+			objects.device->getDevice(),
+			ImageDescriptor{
+				.width = swapchainExtent.width,
+				.height = swapchainExtent.height,
+				.format = VK_FORMAT_B8G8R8A8_UNORM,
+				.usage =
+					VK_IMAGE_USAGE_STORAGE_BIT |
+					VK_IMAGE_USAGE_SAMPLED_BIT |
+					VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+					VK_IMAGE_USAGE_TRANSFER_DST_BIT,
 				.aspect = VK_IMAGE_ASPECT_COLOR_BIT,
 				.dedicatedMemory = true
 			}

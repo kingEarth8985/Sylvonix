@@ -3,6 +3,8 @@
 
 namespace SylvonixNative
 {
+	class Shader;
+
 	struct WindowDescriptor
 	{
 		std::string title;
@@ -35,5 +37,21 @@ namespace SylvonixNative
             VK_SAMPLE_COUNT_1_BIT;
 
 		bool dedicatedMemory = false;
+    };
+
+	struct BufferDescriptor
+    {
+        VkDeviceSize size{};
+
+        VkBufferUsageFlags usage{};
+
+        bool mapped{ false };
+
+        bool dedicatedMemory{ false };
+    };
+
+	struct ComputePipelineDescriptor
+    {
+        Shader* shader{};
     };
 }

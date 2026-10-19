@@ -5,6 +5,7 @@
 
 #include <VulkanCommon.hpp>
 #include <Descriptors.hpp>
+#include <Shader.hpp>
 
 namespace SylvonixNative
 {
@@ -19,6 +20,8 @@ namespace SylvonixNative
 		Application(const ApplicationDescriptor& descriptor);
 
 		~Application();
+
+		void startMainLoop();
 
 	private:
 		VkInstance instance{ VK_NULL_HANDLE };

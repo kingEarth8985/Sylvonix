@@ -13,7 +13,9 @@ set(SYLVONIX_NATIVE_SOURCES
     src/Window.cpp
     src/SwapChain.cpp
     src/Image.cpp
-
+    src/Shader.cpp
+    src/ComputePipeline.cpp
+    src/Buffer.cpp
 )
 
 add_executable(

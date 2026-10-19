@@ -7,7 +7,14 @@ namespace SylvonixNative
     {
         this->allocator = allocator;
         this->device = device;
-        format = desc.format;
+        this->format = desc.format;
+
+        this->extent = {
+            desc.width,
+            desc.height
+        };
+
+        this->aspect = desc.aspect;
 
         VkImageCreateInfo imageCI{
             .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
@@ -43,7 +50,7 @@ namespace SylvonixNative
             .viewType = VK_IMAGE_VIEW_TYPE_2D,
             .format = desc.format,
             .subresourceRange{
-                .aspectMask = desc.aspect,
+                .aspectMask = aspect,
                 .levelCount = 1,
                 .layerCount = 1
             }
@@ -55,6 +62,24 @@ namespace SylvonixNative
     Image::~Image()
     {
         Destroy();
+    }
+
+    void Image::Transition( VkCommandBuffer cb, VkImageLayout newLayout, VkPipelineStageFlags2 dstStage, VkAccessFlags2 dstAccess) 
+    {
+        VkImageMemoryBarrier2 barrier{
+            .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+
+            .oldLayout = layout,
+            .newLayout = newLayout,
+
+            .image = image,
+
+            .subresourceRange{
+                .aspectMask = aspect,
+                .levelCount = 1,
+                .layerCount = 1
+            }
+        };
     }
 
     void Image::Destroy()
