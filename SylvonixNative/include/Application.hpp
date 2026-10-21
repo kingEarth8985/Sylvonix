@@ -17,7 +17,7 @@ namespace SylvonixNative
 	class Application
 	{
 	public:
-		Application(const ApplicationDescriptor& descriptor);
+		Application(const ApplicationDescriptor& descriptorm, int argc, char** argv);
 
 		~Application();
 

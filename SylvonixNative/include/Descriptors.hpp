@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <Type.hpp>
 
 namespace SylvonixNative
 {
@@ -15,7 +16,7 @@ namespace SylvonixNative
 	struct ApplicationDescriptor
 	{
 		std::string name;
-		std::string version;
+		SoftwareVersion version;
 
 		WindowDescriptor windowDescriptor;
 	};

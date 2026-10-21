@@ -1,5 +1,5 @@
 # Build directories
-SylvonixNative/build/
+SylvonixNative/out/
 SylvonixNative/.vscode/
 Sylvonix/bin/
 Sylvonix/obj/

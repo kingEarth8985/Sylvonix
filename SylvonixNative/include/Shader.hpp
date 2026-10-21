@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 
-#include "slang/slang.h"
-#include "slang/slang-com-ptr.h"
+#include <slang/slang.h>
+#include <slang/slang-com-ptr.h>
 
-#include "ShaderParameter.hpp"
+#include <ShaderParameter.hpp>
 
 namespace SylvonixNative
 {

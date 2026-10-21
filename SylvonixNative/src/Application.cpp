@@ -30,16 +30,22 @@ namespace SylvonixNative
 		return allocator;
 	}
 
-	Application::Application(const ApplicationDescriptor& descriptor)
+	Application::Application(const ApplicationDescriptor& descriptor, int argc, char** argv)
 	{
 		chk(SDL_Init(SDL_INIT_VIDEO));
 		chk(SDL_Vulkan_LoadLibrary(NULL));
 		volkInitialize();
 
+		auto appVersion = descriptor.version;
+
 		VkApplicationInfo appInfo{
 			.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
 			.pApplicationName = descriptor.name.c_str(),
-			.apiVersion = VK_API_VERSION_1_3,
+			.applicationVersion = VK_MAKE_VERSION(appVersion.major, appVersion.minor, appVersion.patch),
+			.pEngineName = "Sylvonix",
+			.engineVersion = VK_MAKE_VERSION(0, 0, 0),
+			.apiVersion = VK_API_VERSION_1_4,
+
 		};
 		uint32_t instanceExtensionsCount{ 0 };
 		char const* const* instanceExtensions{ SDL_Vulkan_GetInstanceExtensions(&instanceExtensionsCount) };
@@ -89,7 +95,7 @@ namespace SylvonixNative
 			Shader shader(
 				device->getDevice(),
 				slangSession.get(),
-				"tonemap.slang",
+				"assets/shaderNative/tonemap.slang",
 				ShaderType::Compute
 			);
 
@@ -157,9 +163,9 @@ namespace SylvonixNative
 	void Application::startMainLoop()
 	{
 		uint64_t lastTime{ SDL_GetTicks() };
-		bool quit{ false };
+		bool running = true;
 
-		while (!quit) 
+		while (running) 
 		{
 			float elapsedTime{ (SDL_GetTicks() - lastTime) / 1000.0f };
 			lastTime = SDL_GetTicks();
@@ -167,7 +173,7 @@ namespace SylvonixNative
 			// Event polling
 			for (SDL_Event event; SDL_PollEvent(&event);) {
 				if (event.type == SDL_EVENT_QUIT) {
-					quit = true;
+					running = false;
 					break;
 				}
 				// Window resize

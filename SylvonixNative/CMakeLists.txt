@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(SylvonixNative VERSION 0.1.0 LANGUAGES C CXX)
 
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
+
 set(SYLVONIX_NATIVE_SOURCES
 
     # Entry
@@ -69,17 +72,7 @@ target_include_directories(SylvonixNative PRIVATE
 )
 
 target_include_directories(SylvonixNative PRIVATE
-    "C:/Program Files/KTX-Software/include"
-)
-
-target_include_directories(SylvonixNative PRIVATE
     C:/Dev/vulkanengine/glm
-)
-
-find_library(KTX_LIBRARY
-    NAMES ktx
-    HINTS "C:/Program Files/KTX-Software/lib"
-    REQUIRED
 )
 
 target_include_directories(SylvonixNative PRIVATE
@@ -104,6 +97,13 @@ target_link_libraries(SylvonixNative PRIVATE ${Slang_LIBRARY})
 
 target_compile_definitions(SylvonixNative PRIVATE
     VK_NO_PROTOTYPES
+)
+
+add_custom_command(
+    TARGET SylvonixNative POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo
+        "$<TARGET_RUNTIME_DLLS:SylvonixNative>"
+    COMMAND_EXPAND_LISTS
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

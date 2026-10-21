@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char** argv)
 {
 	SylvonixNative::WindowDescriptor windowDescriptor{
 		.title = "TestEngine",
@@ -12,11 +12,11 @@ int main()
 
 	SylvonixNative::ApplicationDescriptor appDescriptor{
 		.name = "TestEngine",
-		.version = "0.1.0",
+		.version = {0, 0, 0},
 		.windowDescriptor = windowDescriptor
 	};
 
-	SylvonixNative::Application app(appDescriptor);
+	SylvonixNative::Application app(appDescriptor, argc, argv);
 
 	app.startMainLoop();
 
